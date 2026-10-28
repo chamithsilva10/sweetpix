@@ -103,9 +103,13 @@ export function DominoGallery({
     const fit = () => {
       const w = root.clientWidth;
       setContainerWidth(w);
-      const available = w - 48;
-      const perCard = (available - gap * (items.length - 1)) / Math.max(1, items.length);
-      setFitWidth(Math.max(130, Math.min(cardWidth, Math.floor(perCard))));
+      const isCompact = w > 0 && w < 640;
+      const currentGap = isCompact ? Math.max(6, Math.min(10, Math.floor(gap * 0.5))) : gap;
+      const horizontalPadding = isCompact ? 16 : 48;
+      const available = Math.max(120, w - horizontalPadding);
+      const perCard = (available - currentGap * (items.length - 1)) / Math.max(1, items.length);
+      const minW = isCompact ? 68 : 130;
+      setFitWidth(Math.max(minW, Math.min(cardWidth, Math.floor(perCard))));
     };
     fit();
     const observer = new ResizeObserver(fit);
@@ -137,6 +141,7 @@ export function DominoGallery({
         const angle = standAngle * (1 - t);
         card.style.setProperty("--fall", String(Math.round(t * 1000) / 1000));
         card.style.transform = `rotateX(${angle}deg)`;
+        (card.style as any).webkitTransform = `rotateX(${angle}deg)`;
       }
     },
     [items.length, standAngle, reducedMotion],
@@ -164,14 +169,18 @@ export function DominoGallery({
     const scrollParent = findScrollParent(root);
 
     const scrollProgress = () => {
+      const effectiveLength = containerWidth > 0 && containerWidth < 640 ? Math.min(420, scrollLength) : scrollLength;
       if (scrollParent === window) {
         const rect = root.getBoundingClientRect();
         const travel = rect.height - window.innerHeight;
         return travel <= 0 ? 0 : clamp01(-rect.top / travel);
       } else {
         const pEl = scrollParent as HTMLElement;
-        const relativeScroll = Math.max(0, pEl.scrollTop - root.offsetTop);
-        return clamp01(relativeScroll / scrollLength);
+        const pRect = pEl.getBoundingClientRect();
+        const rootRect = root.getBoundingClientRect();
+        // Distance that the top of root has scrolled past or reached the top of pEl
+        const scrolledPast = Math.max(0, pRect.top - rootRect.top + 30);
+        return clamp01(scrolledPast / effectiveLength);
       }
     };
 
@@ -237,25 +246,41 @@ export function DominoGallery({
     };
   }, [paint, isControlled, controlledProgress, autoplay, autoplayDuration, reducedMotion, scrollLength]);
 
+  const isCompact = containerWidth > 0 && containerWidth < 640;
+  const effectiveGap = isCompact ? Math.max(6, Math.min(10, Math.floor(gap * 0.5))) : gap;
+  const effectiveScrollLength = isCompact ? Math.min(420, scrollLength) : scrollLength;
   const width = fitWidth;
   const height = Math.round((fitWidth / cardWidth) * cardHeight);
-  const stageHeight = height + 90;
-  const isMobile = containerWidth > 0 && containerWidth < 640;
+  const stageHeight = isCompact ? height + 60 : height + 90;
 
-  if (isMobile) {
-    return (
+  return (
+    <>
       <div
         ref={setRootRef}
         data-slot="domino-gallery"
         className={cx("relative w-full select-none", className)}
+        style={{
+          height: isControlled ? stageHeight : `calc(${stageHeight}px + ${effectiveScrollLength}px)`,
+          ...style,
+        }}
         {...rest}
       >
-        <div className="flex w-full flex-col gap-2">
-          {/* Horizontally scrollable row with smooth snapping on mobile */}
+        <div
+          className="sticky top-0 flex w-full flex-col items-center justify-center overflow-hidden"
+          style={{ height: `${stageHeight}px` }}
+        >
           <div
             role="list"
-            className="flex w-full gap-3 overflow-x-auto snap-x snap-mandatory px-1 py-2 no-scrollbar touch-pan-x"
-            style={{ WebkitOverflowScrolling: "touch" }}
+            className="flex max-w-full justify-center px-2 sm:px-4 py-3 sm:py-4"
+            style={{
+              gap: effectiveGap,
+              perspective: isCompact ? 900 : 1400,
+              WebkitPerspective: isCompact ? 900 : 1400,
+              perspectiveOrigin: "50% -25%",
+              WebkitPerspectiveOrigin: "50% -25%",
+              transformStyle: "preserve-3d",
+              WebkitTransformStyle: "preserve-3d",
+            }}
           >
             {items.map((item, index) => {
               const isSelected = selected === index;
@@ -263,177 +288,158 @@ export function DominoGallery({
                 <div
                   key={`${item.src}-${index}`}
                   role="listitem"
-                  className="relative shrink-0 snap-center w-[200px] sm:w-[220px] aspect-[2/3]"
+                  className="relative shrink-0"
+                  style={{
+                    width,
+                    height,
+                    transformStyle: "preserve-3d",
+                    WebkitTransformStyle: "preserve-3d",
+                  }}
                 >
                   <button
+                    ref={(node) => {
+                      cardRefs.current[index] = node;
+                    }}
                     type="button"
                     data-card
                     data-selected={isSelected || undefined}
                     aria-label={item.title ?? item.alt ?? `Image ${index + 1}`}
+                    aria-pressed={isSelected}
                     onClick={() => {
                       const next = isSelected ? null : index;
                       setSelected(next);
                       if (next !== null) onSelect?.(index, item);
                     }}
                     className={cx(
-                      "relative block size-full overflow-hidden rounded-2xl border border-white/20 bg-neutral-900 text-left shadow-[0_15px_35px_-8px_rgba(0,0,0,0.85)] transition-all duration-300 cursor-pointer active:scale-95",
+                      "relative block size-full overflow-hidden rounded-xl sm:rounded-2xl border border-white/20 bg-neutral-900 text-left shadow-[0_15px_35px_-8px_rgba(0,0,0,0.85)] sm:shadow-[0_20px_45px_-12px_rgba(0,0,0,0.85)] transition-[border-color,box-shadow,ring] duration-300 cursor-pointer active:scale-95",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
-                      isSelected && "ring-2 ring-white border-white"
+                      isSelected && "ring-2 ring-white border-white scale-[1.02]"
                     )}
+                    style={
+                      {
+                        transformOrigin: "50% 100%",
+                        WebkitTransformOrigin: "50% 100%",
+                        transform: `rotateX(${standAngle}deg)`,
+                        WebkitTransform: `rotateX(${standAngle}deg)`,
+                        backfaceVisibility: "hidden",
+                        WebkitBackfaceVisibility: "hidden",
+                        willChange: "transform",
+                        "--fall": 0,
+                      } as React.CSSProperties
+                    }
                   >
                     <img
                       src={item.src}
                       alt={item.alt ?? ""}
                       loading="lazy"
+                      decoding="async"
                       draggable={false}
-                      className="absolute inset-0 size-full object-cover"
+                      className="absolute inset-0 size-full object-cover transition-transform duration-500 hover:scale-105"
+                      style={{ filter: "brightness(calc(0.65 + var(--fall) * 0.35))" }}
                     />
 
                     {/* Gradient bottom scrim */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent" />
+                    <div
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"
+                      style={{ opacity: "calc(0.4 + var(--fall) * 0.6)" }}
+                    />
 
                     {/* Tag Pill if present */}
                     {item.tag && (
-                      <span className="absolute top-3 left-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                      <span
+                        className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 px-1.5 sm:px-2.5 py-0.5 text-[8px] sm:text-[10px] font-black uppercase tracking-wider text-white truncate max-w-[85%]"
+                        style={{ opacity: "var(--fall)" }}
+                      >
                         {item.tag}
                       </span>
                     )}
 
                     {/* Caption Title */}
                     {item.title && (
-                      <div className="absolute inset-x-0 bottom-0 p-3 text-left">
-                        <p className="text-xs font-bold text-white tracking-tight leading-snug drop-shadow-md">
+                      <div
+                        className="absolute inset-x-0 bottom-0 px-2 pb-2 pt-4 sm:px-3.5 sm:pb-3.5 sm:pt-8 text-left"
+                        style={{ opacity: "var(--fall)" }}
+                      >
+                        <p className="text-[9px] sm:text-xs md:text-sm font-bold text-white tracking-tight leading-tight drop-shadow-md line-clamp-2">
                           {item.title}
                         </p>
                       </div>
                     )}
                   </button>
+
+                  {/* Ground Contact Shadow */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-2 -bottom-2 h-3 sm:h-4 rounded-full bg-black/80 blur-md"
+                    style={{
+                      opacity: "calc(0.3 + var(--fall, 0) * 0.6)",
+                      transform: "scaleX(calc(0.5 + var(--fall, 0) * 0.5))",
+                    }}
+                  />
                 </div>
               );
             })}
           </div>
 
-          {/* Touch Swipe Hint */}
-          <div className="flex items-center justify-between px-1 text-[11px] text-white/40">
-            <span>← Swipe horizontally to view gallery →</span>
-            <span>{items.length} Photos</span>
+          {/* Interactive touch & scroll indicator */}
+          <div className="flex items-center justify-between w-full max-w-md px-3 pt-1 text-[10px] sm:text-[11px] text-white/50 select-none">
+            <span className="flex items-center gap-1">
+              <span className="inline-block size-1.5 rounded-full bg-white animate-pulse" />
+              Scroll down to topple dominoes
+            </span>
+            <span>Tap photo to preview</span>
           </div>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div
-      ref={setRootRef}
-      data-slot="domino-gallery"
-      className={cx("relative w-full select-none", className)}
-      style={{
-        height: isControlled ? stageHeight : `calc(${stageHeight}px + ${scrollLength}px)`,
-        ...style,
-      }}
-      {...rest}
-    >
-      <div
-        className="sticky top-0 flex w-full items-center justify-center overflow-hidden"
-        style={{ height: `${stageHeight}px` }}
-      >
+      {/* Lightbox Modal on Card Tap/Select */}
+      {selected !== null && items[selected] && (
         <div
-          role="list"
-          className="flex max-w-full justify-center px-4 py-4"
-          style={{ gap, perspective: 1400, perspectiveOrigin: "50% -30%" }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Photo Preview"
+          onClick={() => setSelected(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
         >
-          {items.map((item, index) => {
-            const isSelected = selected === index;
-            return (
-              <div
-                key={`${item.src}-${index}`}
-                role="listitem"
-                className="relative shrink-0"
-                style={{ width, height, transformStyle: "preserve-3d" }}
-              >
-                <button
-                  ref={(node) => {
-                    cardRefs.current[index] = node;
-                  }}
-                  type="button"
-                  data-card
-                  data-selected={isSelected || undefined}
-                  aria-label={item.title ?? item.alt ?? `Image ${index + 1}`}
-                  aria-pressed={isSelected}
-                  onClick={() => {
-                    const next = isSelected ? null : index;
-                    setSelected(next);
-                    if (next !== null) onSelect?.(index, item);
-                  }}
-                  className={cx(
-                    "relative block size-full overflow-hidden rounded-2xl border border-white/20 bg-neutral-900 text-left shadow-[0_20px_45px_-12px_rgba(0,0,0,0.85)] transition-[border-color,box-shadow,ring] duration-300 cursor-pointer",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
-                    isSelected && "ring-2 ring-white border-white",
-                  )}
-                  style={
-                    {
-                      transformOrigin: "50% 100%",
-                      transform: `rotateX(${standAngle}deg)`,
-                      backfaceVisibility: "hidden",
-                      "--fall": 0,
-                    } as React.CSSProperties
-                  }
-                >
-                  <img
-                    src={item.src}
-                    alt={item.alt ?? ""}
-                    loading="lazy"
-                    decoding="async"
-                    draggable={false}
-                    className="absolute inset-0 size-full object-cover transition-transform duration-500 hover:scale-105"
-                    style={{ filter: "brightness(calc(0.65 + var(--fall) * 0.35))" }}
-                  />
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-lg w-full rounded-2xl border border-white/20 bg-neutral-950 p-3 sm:p-4 text-white shadow-2xl space-y-3"
+          >
+            <div className="relative aspect-[3/2] sm:aspect-[4/3] w-full overflow-hidden rounded-xl border border-white/10 bg-black">
+              <img
+                src={items[selected].src}
+                alt={items[selected].alt ?? items[selected].title ?? ""}
+                className="size-full object-cover"
+              />
+              {items[selected].tag && (
+                <span className="absolute top-3 left-3 rounded-full bg-white/25 backdrop-blur-md border border-white/30 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                  {items[selected].tag}
+                </span>
+              )}
+            </div>
 
-                  {/* Gradient bottom scrim */}
-                  <div
-                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"
-                    style={{ opacity: "calc(0.4 + var(--fall) * 0.6)" }}
-                  />
-
-                  {/* Tag Pill if present */}
-                  {item.tag && (
-                    <span
-                      className="absolute top-3 left-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white"
-                      style={{ opacity: "var(--fall)" }}
-                    >
-                      {item.tag}
-                    </span>
-                  )}
-
-                  {/* Caption Title */}
-                  {item.title && (
-                    <div
-                      className="absolute inset-x-0 bottom-0 px-3.5 pb-3.5 pt-8 text-left"
-                      style={{ opacity: "var(--fall)" }}
-                    >
-                      <p className="text-xs sm:text-sm font-bold text-white tracking-tight leading-snug drop-shadow-md">
-                        {item.title}
-                      </p>
-                    </div>
-                  )}
-                </button>
-
-                {/* Ground Contact Shadow */}
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-3 -bottom-2 h-4 rounded-full bg-black/80 blur-md"
-                  style={{
-                    opacity: "calc(0.3 + var(--fall, 0) * 0.6)",
-                    transform: "scaleX(calc(0.5 + var(--fall, 0) * 0.5))",
-                  }}
-                />
+            <div className="flex items-center justify-between gap-3 pt-1">
+              <div className="min-w-0 pr-2">
+                <p className="text-xs sm:text-sm font-bold text-white tracking-tight truncate">
+                  {items[selected].title ?? items[selected].alt ?? "Gallery Showcase"}
+                </p>
+                <p className="text-[10px] sm:text-[11px] text-white/50">
+                  Photo {selected + 1} of {items.length} · Tap outside to dismiss
+                </p>
               </div>
-            );
-          })}
+
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                className="shrink-0 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white hover:bg-white hover:text-black transition-all cursor-pointer active:scale-95"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 

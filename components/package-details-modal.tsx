@@ -188,6 +188,8 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
                 cardHeight={360}
                 gap={16}
                 scrollLength={650}
+                autoplay={true}
+                autoplayDuration={2500}
               />
             </div>
           )}
