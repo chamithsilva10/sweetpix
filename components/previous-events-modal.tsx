@@ -75,14 +75,14 @@ export default function PreviousEventsModal({ isOpen, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-black/90 backdrop-blur-2xl animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 md:p-8 bg-black/90 backdrop-blur-2xl animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
     >
-      <div className="relative flex flex-col w-full max-w-6xl max-h-[94svh] rounded-[32px] border border-white/15 bg-black text-white shadow-[0_30px_100px_rgba(0,0,0,0.95)] overflow-hidden">
+      <div className="relative flex flex-col w-full max-w-6xl max-h-[95svh] sm:max-h-[94svh] rounded-2xl sm:rounded-[32px] border border-white/15 bg-black text-white shadow-[0_30px_100px_rgba(0,0,0,0.95)] overflow-hidden">
         {/* Background Dot Matrix Pattern */}
         <DotPattern
           className="opacity-50"
@@ -92,9 +92,9 @@ export default function PreviousEventsModal({ isOpen, onClose }: Props) {
         />
 
         {/* Modal Header */}
-        <div className="relative z-20 flex items-center justify-between border-b border-white/10 px-6 py-4 sm:px-8 bg-black/80 backdrop-blur-md">
-          <div className="flex items-center gap-2.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-white">
+        <div className="relative z-20 flex items-center justify-between border-b border-white/10 px-4 py-3.5 sm:px-8 sm:py-4 bg-black/80 backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-white">
               <Sparkles className="h-3.5 w-3.5" />
               SweetPix Archive
             </span>
@@ -107,14 +107,14 @@ export default function PreviousEventsModal({ isOpen, onClose }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="size-9 rounded-full border border-white/20 bg-white/5 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/15 transition-all"
+            className="size-9 rounded-full border border-white/20 bg-white/5 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/15 transition-all cursor-pointer active:scale-95"
           >
             <X className="size-4" />
           </button>
         </div>
 
         {/* Tilted Cylinder Grid Hero */}
-        <div className="relative flex-1 min-h-[500px] sm:min-h-[580px] w-full overflow-hidden">
+        <div className="relative flex-1 min-h-[440px] sm:min-h-[580px] w-full overflow-hidden">
           <TiltedGridHero
             images={PREVIOUS_EVENTS_IMAGES}
             speed={4.5}
@@ -124,23 +124,23 @@ export default function PreviousEventsModal({ isOpen, onClose }: Props) {
             curve={75}
             className="h-full w-full"
           >
-            <div className="relative z-10 flex h-full flex-col items-center justify-between py-10 sm:py-16 text-center pointer-events-none select-none">
-              <div className="px-6 space-y-3">
-                <h1 className="text-balance text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white drop-shadow-2xl">
+            <div className="relative z-10 flex h-full flex-col items-center justify-between py-8 sm:py-16 text-center pointer-events-none select-none">
+              <div className="px-4 sm:px-6 space-y-2.5 sm:space-y-3">
+                <h1 className="text-balance text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white drop-shadow-2xl">
                   Every frame,
                   <br />
                   brought into focus.
                 </h1>
-                <p className="max-w-md mx-auto text-balance text-xs sm:text-sm text-white/70 leading-relaxed drop-shadow-md">
+                <p className="max-w-md mx-auto text-balance text-xs sm:text-sm text-white/70 leading-relaxed drop-shadow-md px-2">
                   A streaming 3D cylindrical gallery of our past celebrations, corporate galas, convocation ceremonies, and milestone birthdays.
                 </p>
               </div>
 
-              <div className="px-6 pointer-events-auto">
+              <div className="px-4 sm:px-6 pointer-events-auto w-full sm:w-auto">
                 <Button
                   type="button"
                   onClick={onClose}
-                  className="rounded-full bg-white text-black hover:bg-neutral-200 font-bold px-6 py-2.5 shadow-xl text-xs sm:text-sm transition-all"
+                  className="w-full sm:w-auto rounded-full bg-white text-black hover:bg-neutral-200 font-bold px-6 py-2.5 shadow-xl text-xs sm:text-sm transition-all"
                 >
                   <span>Explore Current Packages</span>
                   <ArrowRight className="ml-2 h-4 w-4" />

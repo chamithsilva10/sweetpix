@@ -54,12 +54,12 @@ export default function ProjectCard({
           backgroundImage: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
         }}
       >
-        <div className="relative overflow-hidden rounded-[26px] bg-neutral-950 lg:h-full">
+        <div className="relative overflow-hidden rounded-[26px] bg-neutral-950 min-h-[500px] sm:min-h-[560px] md:min-h-[600px] lg:min-h-0 lg:h-full">
           {/* Image */}
           <div
             onClick={() => setIsDetailsOpen(true)}
             className={cn(
-              "relative w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto lg:h-full cursor-pointer",
+              "relative w-full h-[500px] sm:h-[560px] md:h-[600px] lg:h-full cursor-pointer",
               imageContainerClassName
             )}
           >
@@ -76,7 +76,7 @@ export default function ProjectCard({
           </div>
 
           {/* Top-left tags: Clean Black & White */}
-          <div className="pointer-events-none absolute left-4 top-4 flex flex-wrap gap-1.5 sm:gap-2 max-w-[85%] z-10">
+          <div className="pointer-events-none absolute left-3.5 sm:left-4 top-3.5 sm:top-4 flex flex-wrap gap-1.5 sm:gap-2 max-w-[90%] z-10">
             {displayTags.map((t, idx) => {
               const isPopularTag = t.toLowerCase().includes("popular") || t.toLowerCase().includes("best")
               return (
@@ -84,7 +84,7 @@ export default function ProjectCard({
                   key={t}
                   variant="secondary"
                   className={cn(
-                    "pointer-events-auto border backdrop-blur-md text-[11px] font-semibold tracking-wide shadow-sm",
+                    "pointer-events-auto border backdrop-blur-md text-[10px] sm:text-[11px] font-semibold tracking-wide shadow-sm",
                     isPopularTag
                       ? "border-white/40 bg-white/20 text-white font-bold"
                       : "border-white/15 bg-black/60 text-white/90"
@@ -100,13 +100,13 @@ export default function ProjectCard({
           </div>
 
           {/* Bottom content: Modern Black & White */}
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 bg-gradient-to-t from-neutral-950 via-neutral-950/90 to-transparent z-10">
+          <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 md:p-8 bg-gradient-to-t from-neutral-950 via-neutral-950/95 sm:via-neutral-950/90 to-transparent z-10">
             {/* Subtle dot matrix texture */}
             <div className="pointer-events-none absolute inset-0 dot-grid-pattern-subtle opacity-20 -z-10" />
             <div className="flex flex-col gap-3.5 sm:flex-row sm:items-end sm:justify-between">
               <div className="space-y-1.5">
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <h3 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-lg font-bold tracking-tight text-white sm:text-2xl">
                     {title}
                   </h3>
                   {pkg?.startingPrice && (
@@ -121,7 +121,7 @@ export default function ProjectCard({
                 </p>
 
                 {/* Highlights preview */}
-                <ul className="mt-2.5 max-w-2xl space-y-1 text-xs text-white/80">
+                <ul className="mt-2 max-w-2xl space-y-1 text-xs text-white/80">
                   {displayHighlights.slice(0, 3).map((item) => (
                     <li key={item} className="flex items-start gap-1.5">
                       <span className="text-white/40 select-none">▸</span>
@@ -135,7 +135,7 @@ export default function ProjectCard({
               <button
                 type="button"
                 onClick={() => setIsDetailsOpen(true)}
-                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white hover:text-black hover:border-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white self-start sm:self-auto shadow-lg shadow-black/50 group-hover:scale-105"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white hover:text-black hover:border-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white w-full sm:w-auto shadow-lg shadow-black/50 group-hover:scale-[1.02] sm:group-hover:scale-105 active:scale-95 cursor-pointer"
                 aria-label={`View more details about ${title}`}
               >
                 <span>View More Details</span>

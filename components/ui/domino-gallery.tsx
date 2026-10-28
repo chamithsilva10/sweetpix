@@ -80,6 +80,7 @@ export function DominoGallery({
   const [selected, setSelected] = React.useState<number | null>(null);
   const [reducedMotion, setReducedMotion] = React.useState(false);
   const [fitWidth, setFitWidth] = React.useState(cardWidth);
+  const [containerWidth, setContainerWidth] = React.useState(0);
   const live = React.useRef({
     progress: 0,
     shown: -1,
@@ -100,9 +101,11 @@ export function DominoGallery({
     const root = rootRef.current;
     if (!root) return;
     const fit = () => {
-      const available = root.clientWidth - 48;
+      const w = root.clientWidth;
+      setContainerWidth(w);
+      const available = w - 48;
       const perCard = (available - gap * (items.length - 1)) / Math.max(1, items.length);
-      setFitWidth(Math.max(80, Math.min(cardWidth, Math.floor(perCard))));
+      setFitWidth(Math.max(130, Math.min(cardWidth, Math.floor(perCard))));
     };
     fit();
     const observer = new ResizeObserver(fit);
@@ -237,6 +240,88 @@ export function DominoGallery({
   const width = fitWidth;
   const height = Math.round((fitWidth / cardWidth) * cardHeight);
   const stageHeight = height + 90;
+  const isMobile = containerWidth > 0 && containerWidth < 640;
+
+  if (isMobile) {
+    return (
+      <div
+        ref={setRootRef}
+        data-slot="domino-gallery"
+        className={cx("relative w-full select-none", className)}
+        {...rest}
+      >
+        <div className="flex w-full flex-col gap-2">
+          {/* Horizontally scrollable row with smooth snapping on mobile */}
+          <div
+            role="list"
+            className="flex w-full gap-3 overflow-x-auto snap-x snap-mandatory px-1 py-2 no-scrollbar touch-pan-x"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
+            {items.map((item, index) => {
+              const isSelected = selected === index;
+              return (
+                <div
+                  key={`${item.src}-${index}`}
+                  role="listitem"
+                  className="relative shrink-0 snap-center w-[200px] sm:w-[220px] aspect-[2/3]"
+                >
+                  <button
+                    type="button"
+                    data-card
+                    data-selected={isSelected || undefined}
+                    aria-label={item.title ?? item.alt ?? `Image ${index + 1}`}
+                    onClick={() => {
+                      const next = isSelected ? null : index;
+                      setSelected(next);
+                      if (next !== null) onSelect?.(index, item);
+                    }}
+                    className={cx(
+                      "relative block size-full overflow-hidden rounded-2xl border border-white/20 bg-neutral-900 text-left shadow-[0_15px_35px_-8px_rgba(0,0,0,0.85)] transition-all duration-300 cursor-pointer active:scale-95",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
+                      isSelected && "ring-2 ring-white border-white"
+                    )}
+                  >
+                    <img
+                      src={item.src}
+                      alt={item.alt ?? ""}
+                      loading="lazy"
+                      draggable={false}
+                      className="absolute inset-0 size-full object-cover"
+                    />
+
+                    {/* Gradient bottom scrim */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent" />
+
+                    {/* Tag Pill if present */}
+                    {item.tag && (
+                      <span className="absolute top-3 left-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                        {item.tag}
+                      </span>
+                    )}
+
+                    {/* Caption Title */}
+                    {item.title && (
+                      <div className="absolute inset-x-0 bottom-0 p-3 text-left">
+                        <p className="text-xs font-bold text-white tracking-tight leading-snug drop-shadow-md">
+                          {item.title}
+                        </p>
+                      </div>
+                    )}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Touch Swipe Hint */}
+          <div className="flex items-center justify-between px-1 text-[11px] text-white/40">
+            <span>← Swipe horizontally to view gallery →</span>
+            <span>{items.length} Photos</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

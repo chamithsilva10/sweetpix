@@ -98,7 +98,7 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 md:p-8 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-5 md:p-8 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby={`dialog-title-${pkg.id}`}
@@ -107,7 +107,7 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
       }}
     >
       {/* MODAL CONTAINER: Dot Grid Pattern Background */}
-      <div className="relative flex flex-col w-full max-w-5xl max-h-[92svh] rounded-[32px] border border-white/15 bg-black text-white shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden">
+      <div className="relative flex flex-col w-full max-w-5xl max-h-[94svh] sm:max-h-[92svh] rounded-2xl sm:rounded-[32px] border border-white/15 bg-black text-white shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden">
         {/* Dot Matrix Grid texture matching user screenshot */}
         <DotPattern
           className="opacity-70"
@@ -118,21 +118,21 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/85" />
 
         {/* MODAL HEADER DIVISION SECTION */}
-        <div className="relative z-10 flex items-start justify-between border-b border-white/10 px-6 py-5 sm:px-8 sm:py-6 bg-black/80 backdrop-blur-md">
-          <div className="space-y-1.5 pr-8">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white">
+        <div className="relative z-10 flex items-start justify-between border-b border-white/10 px-4 py-4 sm:px-8 sm:py-6 bg-black/80 backdrop-blur-md">
+          <div className="space-y-1.5 pr-4 sm:pr-8">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-white">
                 <Sparkles className="h-3 w-3 text-white/80" />
                 SweetPix Official
               </span>
-              <span className="rounded-full bg-white/5 border border-white/10 px-2.5 py-0.5 text-[11px] font-medium text-white/60">
+              <span className="rounded-full bg-white/5 border border-white/10 px-2.5 py-0.5 text-[10px] sm:text-[11px] font-medium text-white/60">
                 Starting from {pkg.startingPrice}
               </span>
             </div>
 
             <h2
               id={`dialog-title-${pkg.id}`}
-              className="text-2xl sm:text-3xl font-black tracking-tight text-white"
+              className="text-xl sm:text-3xl font-black tracking-tight text-white"
             >
               {pkg.title}
             </h2>
@@ -147,14 +147,14 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="shrink-0 size-9 sm:size-10 rounded-full border border-white/15 bg-white/5 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/15 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white cursor-pointer"
+            className="shrink-0 size-9 sm:size-10 rounded-full border border-white/15 bg-white/5 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/15 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white cursor-pointer active:scale-95"
           >
             <X className="size-4 sm:size-5" />
           </button>
         </div>
 
         {/* SCROLLABLE CONTENT BODY */}
-        <div className="relative z-10 flex-1 overflow-y-auto px-6 py-6 sm:px-8 sm:py-7 space-y-7 custom-scrollbar">
+        <div className="relative z-10 flex-1 overflow-y-auto px-4 py-5 sm:px-8 sm:py-7 space-y-6 sm:space-y-7 custom-scrollbar">
           {/* DOMINO 3D SCROLL PHOTO GALLERY */}
           {pkg.gallery && pkg.gallery.length > 0 && (
             <div className="space-y-3 pb-2">
@@ -323,9 +323,9 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
                   },
                 }}
                 className={cn(
-                  "relative z-10 grid gap-5 sm:gap-6",
+                  "relative z-10 grid gap-4 sm:gap-6",
                   activeTiers.length === 2 && "grid-cols-1 md:grid-cols-2",
-                  activeTiers.length === 3 && "grid-cols-1 md:grid-cols-3",
+                  activeTiers.length === 3 && "grid-cols-1 lg:grid-cols-3",
                   activeTiers.length >= 4 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
                 )}
               >
@@ -564,7 +564,7 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
         </div>
 
         {/* MODAL BOTTOM BAR: Clean Black & White */}
-        <div className="relative z-10 border-t border-white/10 bg-black/85 backdrop-blur-md px-6 py-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="relative z-10 border-t border-white/10 bg-black/85 backdrop-blur-md px-4 py-3.5 sm:px-8 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-center sm:text-left">
             <p className="text-xs font-medium text-white/85">
               Ready to reserve your date or have special requests?
@@ -574,7 +574,7 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto">
             <Button
               asChild
               className="w-full sm:w-auto rounded-full bg-white text-black hover:bg-neutral-200 font-bold text-xs sm:text-sm px-6 py-2.5 shadow-sm transition-all"
@@ -592,7 +592,7 @@ export default function PackageDetailsModal({ pkg, isOpen, onClose }: Props) {
               type="button"
               variant="outline"
               onClick={onClose}
-              className="rounded-full border-white/20 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white text-xs px-4 cursor-pointer"
+              className="w-full sm:w-auto rounded-full border-white/20 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white text-xs px-4 cursor-pointer"
             >
               Close
             </Button>
@@ -639,9 +639,9 @@ function ModernAnimatedTierCard({
         transition: { duration: 0.25, ease: "easeOut" },
       }}
       className={cn(
-        "relative flex flex-col justify-between rounded-[28px] p-6 sm:p-7 transition-all duration-300 overflow-hidden group",
+        "relative flex flex-col justify-between rounded-[24px] sm:rounded-[28px] p-5 sm:p-7 transition-all duration-300 overflow-hidden group",
         isPopular
-          ? "border-2 border-white/70 bg-gradient-to-b from-white/[0.14] via-neutral-900/95 to-neutral-950 shadow-[0_20px_55px_rgba(255,255,255,0.09)] ring-4 ring-white/10 scale-[1.02] z-10"
+          ? "border-2 border-white/70 bg-gradient-to-b from-white/[0.14] via-neutral-900/95 to-neutral-950 shadow-[0_20px_55px_rgba(255,255,255,0.09)] ring-2 sm:ring-4 ring-white/10 sm:scale-[1.02] z-10"
           : "border border-white/15 bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-xl hover:border-white/35 hover:bg-white/[0.08] shadow-lg shadow-black/40"
       )}
     >

@@ -53,8 +53,8 @@ export default function Page() {
       }} />
 
       {/* 2. PREVIOUS EVENTS CYLINDER STREAM SECTION */}
-      <section id="previous-events-section" className="px-4 py-8 max-w-[1400px] mx-auto">
-        <div className="relative overflow-hidden rounded-[32px] border border-white/15 bg-black shadow-2xl">
+      <section id="previous-events-section" className="px-3 sm:px-4 py-6 sm:py-8 max-w-[1400px] mx-auto">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-[32px] border border-white/15 bg-black shadow-2xl">
           <DotPattern
             className="opacity-40"
             spacing={16}
@@ -69,23 +69,23 @@ export default function Page() {
             aspectRatio={16 / 9}
             gap={6}
             curve={75}
-            className="h-[520px] sm:h-[600px] w-full"
+            className="h-[460px] sm:h-[560px] md:h-[600px] w-full"
           >
-            <div className="relative z-10 flex h-full flex-col items-center justify-between py-10 sm:py-14 text-center pointer-events-none select-none">
-              <div className="px-6 space-y-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-md">
+            <div className="relative z-10 flex h-full flex-col items-center justify-between py-8 sm:py-12 md:py-14 text-center pointer-events-none select-none">
+              <div className="px-4 sm:px-6 space-y-2.5 sm:space-y-3">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-md">
                   <Sparkles className="h-3.5 w-3.5" />
                   Previous Events Archive
                 </span>
-                <h2 className="text-balance text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white drop-shadow-2xl">
+                <h2 className="text-balance text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white drop-shadow-2xl">
                   Every frame,
                   <br />
                   brought into focus.
                 </h2>
               </div>
 
-              <div className="px-6 space-y-3 pointer-events-auto">
-                <p className="max-w-md mx-auto text-balance text-xs sm:text-sm text-white/70 leading-relaxed drop-shadow-md">
+              <div className="px-4 sm:px-6 space-y-3 pointer-events-auto w-full sm:w-auto">
+                <p className="max-w-md mx-auto text-balance text-xs sm:text-sm text-white/70 leading-relaxed drop-shadow-md px-2">
                   A streaming 3D cylindrical gallery of our past celebrations, corporate galas, convocation ceremonies, and milestone birthdays.
                 </p>
                 <Button
@@ -94,7 +94,7 @@ export default function Page() {
                     const el = document.getElementById("portfolio-showcase")
                     el?.scrollIntoView({ behavior: "smooth" })
                   }}
-                  className="rounded-full bg-white text-black hover:bg-neutral-200 font-bold px-6 py-2.5 shadow-xl text-xs sm:text-sm transition-all"
+                  className="w-full sm:w-auto rounded-full bg-white text-black hover:bg-neutral-200 font-bold px-6 py-2.5 shadow-xl text-xs sm:text-sm transition-all"
                 >
                   <span>Explore Pricing & Packages</span>
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -106,14 +106,14 @@ export default function Page() {
       </section>
 
       {/* 3. MAIN PORTFOLIO & PRICING SHOWCASE */}
-      <section id="portfolio-showcase" className="px-4 pt-6 pb-16 lg:pb-6">
+      <section id="portfolio-showcase" className="px-3 sm:px-4 pt-4 sm:pt-6 pb-12 sm:pb-16 lg:pb-6">
         <div className="grid h-full grid-cols-1 gap-4 lg:grid-cols-[440px_1fr]">
           {/* LEFT: sticky and full height, modern monochrome black & white aesthetic */}
           <aside className="lg:sticky lg:top-4 lg:h-[calc(100svh-2rem)]">
             <RevealOnView
               as="div"
               intensity="hero"
-              className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/60 p-6 sm:p-8 backdrop-blur-xl"
+              className="relative flex h-full flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 bg-neutral-900/60 p-5 sm:p-7 lg:p-8 backdrop-blur-xl"
               staggerChildren
             >
               {/* Dot Matrix Grid texture matching user screenshot */}
@@ -128,9 +128,9 @@ export default function Page() {
               {/* TOP SECTION */}
               <div className="relative">
                 {/* Wordmark & Upper Right "Previous Events" Button */}
-                <div className="mb-8 flex items-center justify-between">
+                <div className="mb-6 sm:mb-8 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-extrabold tracking-tight text-white">SweetPix</span>
+                    <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">SweetPix</span>
                     <span className="h-2 w-2 rounded-full bg-white/60" aria-hidden="true" />
                   </div>
 
@@ -148,20 +148,20 @@ export default function Page() {
 
                 {/* Headline with intro blur effect */}
                 <AnimatedHeading
-                  className="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl text-white"
+                  className="text-3xl font-black leading-[1.08] tracking-tight sm:text-4xl md:text-5xl text-white"
                   lines={["Capturing Your", "Sweetest Moments"]}
                 />
 
-                <p className="mt-4 max-w-[42ch] text-base sm:text-lg text-white/70 leading-relaxed">
+                <p className="mt-3.5 sm:mt-4 max-w-[42ch] text-sm sm:text-base md:text-lg text-white/70 leading-relaxed">
                   Premium photography, luxury hardcover albums, handcrafted frames, and archival lab prints tailored for your milestones.
                 </p>
 
                 {/* Modern Black & White CTAs */}
-                <div className="mt-6 flex flex-wrap items-center gap-3">
+                <div className="mt-5 sm:mt-6 flex flex-wrap items-center gap-3">
                   <Button
                     asChild
                     size="lg"
-                    className="rounded-full bg-white text-black hover:bg-neutral-200 font-semibold px-6 shadow-sm transition-all"
+                    className="w-full sm:w-auto rounded-full bg-white text-black hover:bg-neutral-200 font-semibold px-6 shadow-sm transition-all"
                   >
                     <a href={whatsappInquiryUrl} target="_blank" rel="noreferrer">
                       Book on WhatsApp
@@ -172,11 +172,11 @@ export default function Page() {
               </div>
 
               {/* BOTTOM SECTION: Bold watermark typography & clean footer */}
-              <div className="relative mt-10">
-                <p className="mb-3 text-xs font-semibold tracking-widest text-white/50 uppercase">
+              <div className="relative mt-8 sm:mt-10">
+                <p className="mb-2.5 sm:mb-3 text-xs font-semibold tracking-widest text-white/50 uppercase">
                   SERVICES & COLLECTIONS
                 </p>
-                <ul className="grid grid-cols-2 gap-x-6 gap-y-3 text-2xl font-black text-white/25 sm:grid-cols-3">
+                <ul className="grid grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-2 sm:gap-y-3 text-lg sm:text-xl md:text-2xl font-black text-white/25 sm:grid-cols-3">
                   <li className="hover:text-white/60 transition-colors">Birthday</li>
                   <li className="hover:text-white/60 transition-colors">Events</li>
                   <li className="hover:text-white/60 transition-colors">Graduation</li>
@@ -186,7 +186,7 @@ export default function Page() {
                 </ul>
 
                 {/* Clean minimalist contact metadata strip */}
-                <div className="mt-8 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-y-2 text-xs text-white/50">
+                <div className="mt-6 sm:mt-8 pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-white/50">
                   <span>Colombo, Sri Lanka</span>
                   <a
                     href={`tel:${sweetPixContact.phone}`}
@@ -236,7 +236,8 @@ export default function Page() {
         wordmark="sweetpix"
         label="SweetPix Photography"
         meta="©2026 · Colombo & Island-wide Coverage"
-        height="540px"
+        height="min(540px, 75svh)"
+        className="min-h-[420px] sm:min-h-[480px] lg:min-h-[540px]"
       />
 
       {/* Previous Events Modal triggered by the upper right button */}

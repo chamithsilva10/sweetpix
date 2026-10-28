@@ -135,12 +135,13 @@ function TunnelCard({ card, progress, pointer, total, stage, onCardClick }: Tunn
   const opacity = useTransform(localProgress, [0, 0.18, 0.82, 0.98], [0, 1, 1, 0])
 
   const cardWidth = stage.isMobile
-    ? Math.max(130, Math.min(180, stage.width * 0.38))
+    ? Math.max(115, Math.min(155, stage.width * 0.34))
     : Math.max(180, Math.min(270, stage.width * 0.18))
 
-  const baseX = card.angleCos * (stage.width * card.radiusFactorX)
-  const baseY = card.angleSin * (stage.height * card.radiusFactorY)
-  const panStrength = stage.isMobile ? 20 : 45
+  const scaleFactor = stage.isMobile ? 0.72 : 1
+  const baseX = card.angleCos * (stage.width * card.radiusFactorX * scaleFactor)
+  const baseY = card.angleSin * (stage.height * card.radiusFactorY * scaleFactor)
+  const panStrength = stage.isMobile ? 18 : 45
 
   const transform = useTransform(
     [z, pointer.x, pointer.y],
@@ -329,18 +330,18 @@ export default function PerspectiveTunnelHero({ onEnter }: Props) {
       {/* Central Anchor Typography: "SweetPix" */}
       <motion.div
         style={{ scale: titleScale, opacity: titleOpacity }}
-        className="pointer-events-none z-0 flex flex-col items-center text-center px-6 max-w-2xl"
+        className="pointer-events-none z-0 flex flex-col items-center text-center px-4 sm:px-6 max-w-2xl"
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-white backdrop-blur-md mb-4 shadow-sm">
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.25em] sm:tracking-[0.3em] text-white backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
           <Sparkles className="h-3.5 w-3.5 text-white" />
           <span>Official Price List</span>
         </div>
 
-        <h1 className="text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter leading-[0.88] bg-gradient-to-b from-white via-white/95 to-white/40 bg-clip-text text-transparent drop-shadow-2xl">
+        <h1 className="text-[clamp(2.75rem,1.25rem+8vw,8.5rem)] font-black tracking-tight sm:tracking-tighter leading-[0.9] bg-gradient-to-b from-white via-white/95 to-white/40 bg-clip-text text-transparent drop-shadow-2xl select-none">
           SWEETPIX
         </h1>
 
-        <p className="mt-4 max-w-[36ch] text-sm sm:text-base font-light text-white/70 leading-relaxed">
+        <p className="mt-3 sm:mt-4 max-w-[36ch] text-xs sm:text-sm md:text-base font-light text-white/70 leading-relaxed px-2">
           Premium photography, handcrafted frames, archival lab prints, and luxury albums.
         </p>
       </motion.div>
@@ -366,18 +367,18 @@ export default function PerspectiveTunnelHero({ onEnter }: Props) {
       {/* Bottom Scroll / Enter Prompt */}
       <motion.div
         style={{ opacity: promptOpacity }}
-        className="absolute bottom-6 sm:bottom-8 z-30 flex flex-col items-center gap-2.5"
+        className="absolute bottom-5 sm:bottom-8 z-30 flex flex-col items-center gap-2"
       >
         <button
           type="button"
           onClick={scrollToPortfolio}
-          className="group flex items-center gap-2 rounded-full border border-white/20 bg-white/10 hover:bg-white hover:text-black px-5 py-2.5 text-xs font-semibold tracking-wider uppercase text-white backdrop-blur-md transition-all duration-300 shadow-xl cursor-pointer"
+          className="group flex items-center gap-2 rounded-full border border-white/20 bg-white/10 hover:bg-white hover:text-black px-4 sm:px-5 py-2.5 text-xs font-semibold tracking-wider uppercase text-white backdrop-blur-md transition-all duration-300 shadow-xl cursor-pointer"
         >
           <span>Explore Packages</span>
           <ArrowDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" />
         </button>
 
-        <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-white/40">
+        <span className="text-[9px] sm:text-[10px] font-mono tracking-[0.25em] sm:tracking-[0.3em] uppercase text-white/40">
           Scroll or swipe through 3D corridor
         </span>
       </motion.div>
