@@ -31,6 +31,13 @@ export interface FooterColumn {
   links: FooterLink[]
 }
 
+export interface DeveloperCredit {
+  name: string
+  role?: string
+  linkedin?: string
+  github?: string
+}
+
 export interface HalftoneWordmarkFooterProps {
   /** The giant word printed in dots. Lowercase reads best. */
   wordmark?: string
@@ -38,6 +45,8 @@ export interface HalftoneWordmarkFooterProps {
   label?: string
   /** The muted line under it. */
   meta?: string
+  /** Developer credit line at the bottom. */
+  developer?: DeveloperCredit | null
   /** Link columns along the top. */
   columns?: FooterColumn[]
   /** Show the back-to-top link. It scrolls the window to 0. Defaults to true. */
@@ -75,6 +84,14 @@ const PRESETS: { [K in HalftonePreset]: HalftonePalette } = {
   cobalt: { background: "#0d1b4d", ink: "#dfe7ff", warm: "#ffcd3c" },
 }
 
+export const DEFAULT_DEVELOPER: DeveloperCredit = {
+  name: "Chamith Shaminda",
+  role: "Full-Stack Developer",
+  linkedin:
+    "https://www.linkedin.com/in/chamith-shaminda-de-silva-8706a8274?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+  github: "https://github.com/chamithsilva10",
+}
+
 const DEFAULT_COLUMNS: FooterColumn[] = [
   {
     title: "Photography",
@@ -93,11 +110,15 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
     ],
   },
   {
-    title: "Contact",
+    title: "Developer & Contact",
     links: [
-      { label: "Colombo & Island-wide", href: "https://wa.me/94771234567" },
-      { label: "+94 77 123 4567", href: "tel:+94771234567" },
-      { label: "@sweetpix.official", href: "https://instagram.com/sweetpix.official" },
+      { label: "Chamith Shaminda (Dev)", href: "https://github.com/chamithsilva10" },
+      {
+        label: "LinkedIn Profile",
+        href: "https://www.linkedin.com/in/chamith-shaminda-de-silva-8706a8274?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+      },
+      { label: "GitHub Profile", href: "https://github.com/chamithsilva10" },
+      { label: "SweetPix WhatsApp", href: "https://wa.me/94771234567" },
     ],
   },
 ]
@@ -189,19 +210,44 @@ const HWF_CSS = `
 .hwf-col a:hover, .hwf-up:hover { opacity: 1; background-size: 100% 1px; }
 .hwf-col a:focus-visible, .hwf-up:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; opacity: 1; }
 .hwf-rule {
-  position: relative; z-index: 1; display: flex; justify-content: flex-end; align-items: center; gap: 16px;
-  margin: clamp(18px, 2.6vw, 30px) clamp(16px, 3.4vw, 44px) 0; padding-top: 12px;
+  position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+  margin: clamp(18px, 2.6vw, 30px) clamp(16px, 3.4vw, 44px) 0; padding-top: 14px;
   border-top: 0.5px solid color-mix(in srgb, var(--hwf-ink) 16%, transparent);
-  font-family: var(--hwf-mono); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase;
+  font-family: var(--hwf-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+}
+.hwf-developer {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; opacity: .88;
+}
+.hwf-developer strong {
+  color: #fff; font-weight: 700;
+}
+.hwf-developer a {
+  color: inherit; text-decoration: none; opacity: .8;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px; background-repeat: no-repeat; background-position: 0 100%;
+  transition: opacity .2s ease, background-size .3s ease, color .2s ease;
+}
+.hwf-developer a:hover {
+  opacity: 1; color: #fff; background-size: 100% 1px;
+}
+.hwf-divider {
+  opacity: .35;
 }
 .hwf-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 768px) {
   .hwf-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); row-gap: 20px; column-gap: 16px; }
   .hwf-brand { grid-column: 1 / -1; }
 }
+@media (max-width: 640px) {
+  .hwf-rule {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 14px;
+  }
+}
 @media (max-width: 480px) {
   .hwf-top { grid-template-columns: 1fr; row-gap: 18px; padding-top: 20px; }
-  .hwf-rule { justify-content: space-between; margin-top: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hwf-col a, .hwf-up { transition: none; }
@@ -212,6 +258,7 @@ export function HalftoneWordmarkFooter({
   wordmark = "sweetpix",
   label = "SweetPix Photography",
   meta = "©2026 · Colombo / Sri Lanka",
+  developer = DEFAULT_DEVELOPER,
   columns = DEFAULT_COLUMNS,
   backToTop = true,
   preset = "night",
@@ -550,6 +597,41 @@ export function HalftoneWordmarkFooter({
         ))}
       </div>
       <div className="hwf-rule">
+        {developer ? (
+          <div className="hwf-developer">
+            <span>
+              Created by {developer.role || "Full-Stack Developer"}{" "}
+              <strong>{developer.name}</strong>
+            </span>
+            {developer.linkedin && (
+              <>
+                <span className="hwf-divider">·</span>
+                <a
+                  href={developer.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hwf-dev-link"
+                >
+                  LinkedIn ↗
+                </a>
+              </>
+            )}
+            {developer.github && (
+              <>
+                <span className="hwf-divider">·</span>
+                <a
+                  href={developer.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hwf-dev-link"
+                >
+                  GitHub ↗
+                </a>
+              </>
+            )}
+          </div>
+        ) : null}
+
         {backToTop ? (
           <button type="button" className="hwf-up" onClick={toTop}>
             Back to top ↑

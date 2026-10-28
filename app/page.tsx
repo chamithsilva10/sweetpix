@@ -203,6 +203,30 @@ export default function Page() {
                     {sweetPixContact.instagram}
                   </a>
                 </div>
+
+                {/* Developer credit */}
+                <div className="mt-3 pt-2 text-[10px] text-white/40 flex items-center justify-between">
+                  <span>Dev: Chamith Shaminda</span>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href="https://www.linkedin.com/in/chamith-shaminda-de-silva-8706a8274?utm_source=share_via&utm_content=profile&utm_medium=member_ios"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors"
+                    >
+                      LinkedIn
+                    </a>
+                    <span>·</span>
+                    <a
+                      href="https://github.com/chamithsilva10"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors"
+                    >
+                      GitHub
+                    </a>
+                  </div>
+                </div>
               </div>
             </RevealOnView>
           </aside>
@@ -236,6 +260,13 @@ export default function Page() {
         wordmark="sweetpix"
         label="SweetPix Photography"
         meta="©2026 · Colombo & Island-wide Coverage"
+        developer={{
+          name: "Chamith Shaminda",
+          role: "Full-Stack Developer",
+          linkedin:
+            "https://www.linkedin.com/in/chamith-shaminda-de-silva-8706a8274?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+          github: "https://github.com/chamithsilva10",
+        }}
         height="min(540px, 75svh)"
         className="min-h-[420px] sm:min-h-[480px] lg:min-h-[540px]"
       />
