@@ -62,9 +62,9 @@ export type SweetPixPackage = {
 }
 
 export const sweetPixContact = {
-  phone: "+94771234567",
-  whatsappNumber: "94771234567",
-  displayPhone: "+94 77 123 4567",
+  phone: "+94701950409",
+  whatsappNumber: "94701950409",
+  displayPhone: "+94 70 195 0409",
   instagram: "@sweetpix.official",
   instagramUrl: "https://instagram.com/sweetpix.official",
   location: "Colombo & Island-wide Coverage, Sri Lanka",

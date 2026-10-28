@@ -118,7 +118,7 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
         href: "https://www.linkedin.com/in/chamith-shaminda-de-silva-8706a8274?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
       },
       { label: "GitHub Profile", href: "https://github.com/chamithsilva10" },
-      { label: "SweetPix WhatsApp", href: "https://wa.me/94771234567" },
+      { label: "SweetPix WhatsApp", href: "https://wa.me/94701950409" },
     ],
   },
 ]
