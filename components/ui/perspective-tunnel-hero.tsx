@@ -7,6 +7,7 @@ import {
   useReducedMotion,
   useMotionValue,
   useSpring,
+  useScroll,
   MotionValue,
 } from "framer-motion"
 import { ArrowDown, Sparkles } from "lucide-react"
@@ -102,6 +103,8 @@ function useCameraParallax(enabled: boolean) {
   useEffect(() => {
     if (!enabled) return
     const onMove = (e: PointerEvent) => {
+      // Ignore touch gestures so mobile thumb swipes keep camera flight steady
+      if (e.pointerType === "touch") return
       rawX.set((e.clientX / window.innerWidth - 0.5) * 2)
       rawY.set((e.clientY / window.innerHeight - 0.5) * 2)
     }
@@ -128,20 +131,20 @@ function TunnelCard({ card, progress, pointer, total, stage, onCardClick }: Tunn
 
   const localProgress = useTransform(progress, [start, end], [0, 1])
 
-  const farZ = stage.isMobile ? -1200 : -1700
-  const nearZ = stage.isMobile ? 350 : 500
+  const farZ = stage.isMobile ? -1400 : -1800
+  const nearZ = stage.isMobile ? 450 : 600
   const z = useTransform(localProgress, [0, 1], [farZ, nearZ])
 
-  const opacity = useTransform(localProgress, [0, 0.18, 0.82, 0.98], [0, 1, 1, 0])
+  const opacity = useTransform(localProgress, [0, 0.15, 0.85, 0.98], [0, 1, 1, 0])
 
   const cardWidth = stage.isMobile
-    ? Math.max(115, Math.min(155, stage.width * 0.34))
+    ? Math.max(120, Math.min(160, stage.width * 0.36))
     : Math.max(180, Math.min(270, stage.width * 0.18))
 
-  const scaleFactor = stage.isMobile ? 0.72 : 1
+  const scaleFactor = stage.isMobile ? 0.75 : 1
   const baseX = card.angleCos * (stage.width * card.radiusFactorX * scaleFactor)
   const baseY = card.angleSin * (stage.height * card.radiusFactorY * scaleFactor)
-  const panStrength = stage.isMobile ? 18 : 45
+  const panStrength = stage.isMobile ? 12 : 45
 
   const transform = useTransform(
     [z, pointer.x, pointer.y],
@@ -190,7 +193,7 @@ type Props = {
 }
 
 export default function PerspectiveTunnelHero({ onEnter }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
 
   const [stage, setStage] = useState<StageDimensions>({
@@ -213,11 +216,15 @@ export default function PerspectiveTunnelHero({ onEnter }: Props) {
     return () => window.removeEventListener("resize", updateDimensions)
   }, [])
 
-  // Raw motion value controlled directly by mouse wheel / touch trackpad
-  const rawProgress = useMotionValue(0)
-  const smoothProgress = useSpring(rawProgress, {
-    stiffness: 80,
-    damping: 30,
+  // Native scroll progress through the pinned corridor track
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end end"],
+  })
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 24,
     restDelta: 0.0001,
   })
 
@@ -225,93 +232,33 @@ export default function PerspectiveTunnelHero({ onEnter }: Props) {
     if (onEnter) {
       onEnter()
     } else {
-      const target = document.getElementById("portfolio-showcase")
+      const target = document.getElementById("previous-events-section") || document.getElementById("portfolio-showcase")
       if (target) {
         target.scrollIntoView({ behavior: "smooth" })
       }
     }
   }
 
-  // Handle wheel scrolling locally inside the viewport container
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-
-    const handleWheel = (e: WheelEvent) => {
-      const current = rawProgress.get()
-      const delta = e.deltaY * 0.001
-
-      // If scrolling down and at the end of tunnel, let standard page scroll take over
-      if (current >= 0.97 && e.deltaY > 0) {
-        scrollToPortfolio()
-        return
-      }
-
-      // If scrolling up at the beginning, let user scroll up normally
-      if (current <= 0.02 && e.deltaY < 0) {
-        return
-      }
-
-      e.preventDefault()
-      const next = Math.min(1, Math.max(0, current + delta))
-      rawProgress.set(next)
-    }
-
-    el.addEventListener("wheel", handleWheel, { passive: false })
-    return () => el.removeEventListener("wheel", handleWheel)
-  }, [rawProgress])
-
-  // Touch support for mobile devices
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-
-    let startY = 0
-
-    const handleTouchStart = (e: TouchEvent) => {
-      startY = e.touches[0].clientY
-    }
-
-    const handleTouchMove = (e: TouchEvent) => {
-      const currentY = e.touches[0].clientY
-      const delta = (startY - currentY) * 0.002
-      startY = currentY
-
-      const current = rawProgress.get()
-      if (current >= 0.98 && delta > 0) {
-        scrollToPortfolio()
-        return
-      }
-
-      const next = Math.min(1, Math.max(0, current + delta))
-      rawProgress.set(next)
-    }
-
-    el.addEventListener("touchstart", handleTouchStart, { passive: true })
-    el.addEventListener("touchmove", handleTouchMove, { passive: true })
-
-    return () => {
-      el.removeEventListener("touchstart", handleTouchStart)
-      el.removeEventListener("touchmove", handleTouchMove)
-    }
-  }, [rawProgress])
-
   const pointer = useCameraParallax(!reduce)
 
-  const titleScale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1, 1.35])
-  const titleOpacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0.35, 1, 1, 0.05])
-  const promptOpacity = useTransform(smoothProgress, [0, 0.15], [1, 0.3])
+  const titleScale = useTransform(smoothProgress, [0, 0.5, 1], [0.85, 1, 1.35])
+  const titleOpacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0.4, 1, 1, 0.05])
+  const promptOpacity = useTransform(smoothProgress, [0, 0.12], [1, 0])
 
   return (
-    <section
-      ref={containerRef}
-      id="sweetpix-splash"
-      className="relative h-[100svh] w-full overflow-hidden bg-black text-white select-none flex items-center justify-center"
-      style={{
-        perspective: stage.isMobile ? "900px" : "1200px",
-        transformStyle: "preserve-3d",
-      }}
+    <div
+      ref={trackRef}
+      id="sweetpix-splash-track"
+      className="relative h-[220vh] sm:h-[260vh] w-full bg-black"
     >
+      <section
+        id="sweetpix-splash"
+        className="sticky top-0 h-[100svh] w-full overflow-hidden bg-black text-white select-none flex items-center justify-center"
+        style={{
+          perspective: stage.isMobile ? "900px" : "1200px",
+          transformStyle: "preserve-3d",
+        }}
+      >
       {/* Immersive Dot Matrix Grid matching user screenshot */}
       <div
         className="pointer-events-none absolute inset-0 opacity-60"
@@ -383,5 +330,6 @@ export default function PerspectiveTunnelHero({ onEnter }: Props) {
         </span>
       </motion.div>
     </section>
+  </div>
   )
 }
